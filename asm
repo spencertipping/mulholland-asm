@@ -633,7 +633,7 @@ file::write('README.md', retrieve('markdown::readme'));
 file::write("src/$_.mh", retrieve("mh::$_"), mkpath => 1) for grep s/^mh:://, sort keys %data;
 
 my $sources = join ' ', <src/*.mh>;
-my $mh_asm  = join '', qx|deps/mh-jsii -c $sources|;
+my $mh_asm  = join '', qx|deps/mh-jsii -jdeps/struct.js -jdeps/elf.js -jdeps/bitwise.js -jdeps/bit-vector.js -c $sources|;
 file::write('mh-asm', $mh_asm);
 chmod 0700, 'mh-asm';
 
