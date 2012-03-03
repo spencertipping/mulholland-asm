@@ -628,7 +628,14 @@ else    {pop @{$transient{path}}}
 __
 meta::function('reload', 'around_hook(\'reload\', sub {execute($_) for grep ! /^bootstrap::/, keys %data});');
 meta::function('render', <<'__');
+unlink <src/*.mh>;
 file::write('README.md', retrieve('markdown::readme'));
+file::write("src/$_.mh", retrieve("mh::$_"), mkpath => 1) for grep s/^mh:://, sort keys %data;
+
+my $sources = join ' ', <src/*.mh>;
+my $mh_asm  = join '', qx|deps/mh-jsii -c $sources|;
+file::write('mh-asm', $mh_asm);
+chmod 0700, 'mh-asm';
 
 __
 meta::function('repl', <<'__');
