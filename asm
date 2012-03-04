@@ -797,10 +797,10 @@ my $section_level = 0;
 my @markup;
 
 my $indent        = sub {'  ' x ($_[0] || $section_level)};
-my $unindent      = sub {my $spaces = '  ' x ($section_level - 1); s/^$spaces//gm};
+my $unindent      = sub {my $spaces = '  ' x ($section_level - 1); s/^$spaces//gm; $_};
 
-my $code          = sub {&$unindent(); s/^c\n//;                   push @markup, join("\n", map &$indent(2) . $_, split /\n/, $_)};
-my $quoted        = sub {&$unindent(); s/^\|(\s?)/ \1/; s/^  //mg; push @markup, join("\n", map &$indent(2) . $_, split /\n/, $_)};
+my $code          = sub {&$unindent(); s/^c\n//;                   push @markup, join("\n", map &$indent(2) . $_, split /\n/)};
+my $quoted        = sub {&$unindent(); s/^\|(\s?)/ \1/; s/^  //mg; push @markup, join("\n", map &$indent(2) . $_, split /\n/)};
 
 my $heading       = sub {'#' x $_[0]};
 my $section       = sub {&$unindent(); push @markup, &$heading($_[0]) . ' ' . $2};
@@ -816,7 +816,7 @@ for (@paragraphs) {
   &$quoted(), next if     /^\h*\|/;
 
   &$title(), s/^.*\n// if /^(\s*)(\S.*)\.\n([^\n]+)/ and length("$1$2") < 60 and length("$1$2") - 10 < length($3);
-  push @markup, join "\n", map {&$unindent() and $_} split /\n/, $_;
+  push @markup, join "\n", map &$unindent(), split /\n/;
 }
 
 join "\n\n", @markup;
@@ -1354,7 +1354,7 @@ meta::parent('/home/spencertipping/bin/mh-object', <<'__');
 function::compile                                           51bbd6c69566343dae446e33570d911e
 function::repl                                              889cfc8294d68fca8641db03f8996b8a
 meta::type::mh                                              0b10222b800b45a0e3cb98e8d7607645
-parent::/home/spencertipping/conjectures/perl-objects/sdoc  e4b705e778f5885457320433cea95a2f
+parent::/home/spencertipping/conjectures/perl-objects/sdoc  0cef7258a2449765557387e954ab76d0
 parent::preprocessor                                        4450ebbe2c9d3a70ada4050fcd567907
 parent::vim-highlighters                                    9f43562336f10d621ddefd326a989b1d
 retriever::mhi                                              72bbfd7e2a90f61e7500e38f4f700e79
@@ -1483,7 +1483,7 @@ __
 meta::parent('/home/spencertipping/conjectures/perl-objects/sdoc', <<'__');
 function::sdoc                           f0cea831720d18449455a8ed79181727
 function::sdoc-html                      b23152b3f5be696e5bae842ec43fc5a4
-function::sdoc-markdown                  2f219c0399669b223a6d1bf1829218ff
+function::sdoc-markdown                  a35a6441dd750466f2d0e636bee2b382
 function::sdocp                          c3d738d982ba87418a298ff58478a85b
 meta::type::sdoc                         22cd7315641d38c9d536344e83c36bed
 meta::type::slibrary                     95474943c4a5f8ff17d3cf66ddb7c386
